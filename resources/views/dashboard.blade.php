@@ -143,12 +143,12 @@
                 <div class="flex space-x-10">
                     <div class="flex">
                         <p class="font-extrabold">Type:</p>
-                        <p class="font-normal">{{ $meterinfo->type }}</p>
+                        <p class="font-normal">{{ $meterinfo['rate']->type}}</p>
                     </div>
 
                     <div class="flex ">
                         <p class="font-extrabold">Rate:</p>
-                        <p class="font-normal text-green-dark">Php {{ $meterinfo->rate }}</p>
+                        <p class="font-normal text-green-dark">Php {{ $meterinfo['rate']->rate }}</p>
                         <p class="font-normal text-red-dark"> kWh</p>
                     </div>
 
@@ -236,17 +236,17 @@
                     <span class="flex space-x-2 ">
                         <p>Status:</p>
                         {{-- <p></p> --}}
-                        <p class="text-green-dark font-normal">{{ $meterinfo->status }}</p>
+                        <p class="text-green-dark font-normal">{{ $meterinfo['meter']->status }}</p>
                     </span>
                     <span class="flex space-x-2">
                         <p>Owner:</p>
                         {{-- <p></p> --}}
-                        <p class="text-green-dark font-normal">{{ $meterinfo->Owner }}</p>
+                        <p class="text-green-dark font-normal">{{ $meterinfo['meter']->Owner }}</p>
                     </span>
                     <span class="flex space-x-2">
                         <p>Address:</p>
                         {{-- <p></p> --}}
-                        <p class="text-green-dark font-normal">{{ $meterinfo->Address }}</p>
+                        <p class="text-green-dark font-normal">{{ $meterinfo['meter']->Address }}</p>
                     </span>
                 </div>
             </div>

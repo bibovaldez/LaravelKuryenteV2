@@ -33,42 +33,40 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // dd($request->all());
-
+   
         $validatedData = $request->validate([
             'fname' => 'required|string|max:255|regex:/^[a-zA-Z]+$/u',
             'mname' => 'required|string|max:255|regex:/^[a-zA-Z]+$/u',
             'lname' => 'required|string|max:255|regex:/^[a-zA-Z]+$/u',
             'phone' => 'required|string|max:255',
-            'province' => 'required|string|max:255',function ($attribute, $value, $fail) {
+            'province' => 'required|string|max:255', function ($attribute, $value, $fail) {
                 // check if null
                 if ($value == null) {
                     $fail('The province field is required.');
                 }
             },
-            'municipality' =>'required|string|max:255', function ($attribute, $value, $fail) {
+            'municipality' => 'required|string|max:255', function ($attribute, $value, $fail) {
                 // check if null
                 if ($value == null) {
                     $fail('The municipality field is required.');
                 }
             },
-            'barangay' =>'required|string|max:255', function ($attribute, $value, $fail) {
+            'barangay' => 'required|string|max:255', function ($attribute, $value, $fail) {
                 // check if null
                 if ($value == null) {
                     $fail('The barangay field is required.');
                 }
             },
-            'MID' =>[
+            'MID' => [
                 'required',
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) {
                     $meter = DB::table('meter')->where('MID', $value)->first();
-                    
+
                     if (!$meter) {
                         $fail('Invalid Credentials. Please check your MID and PIN.');
-                    }
-                    else if($meter->PIN != request('PIN')){
+                    } else if ($meter->PIN != request('PIN')) {
                         $fail('Invalid Credentials. Please check your MID and PIN.');
                     }
                 },
@@ -90,7 +88,8 @@ class RegisteredUserController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+        // change MID to the id of meter
+        $validatedData['MID'] = DB::table('meter')->where('MID', $validatedData['MID'])->first()->id;
         $user = User::create([
             'firstName' => $validatedData['fname'],
             'middleName' => $validatedData['mname'],
@@ -100,7 +99,7 @@ class RegisteredUserController extends Controller
             'Municipality' => $validatedData['municipality'],
             'Barangay' => $validatedData['barangay'],
             'F_MID' => $validatedData['MID'],
-            'username'=> $validatedData['username'],
+            'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);

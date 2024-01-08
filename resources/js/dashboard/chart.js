@@ -12,7 +12,6 @@ let timeUnit = {
     month: false,
     year: false,
 };
-let presentConsumption = document.getElementById("presentConsumption");
 // listen for the event
 const userId = document.head.querySelector('meta[name="user-id"]').content;
 

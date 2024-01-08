@@ -38,8 +38,12 @@ return new class extends Migration
         ON SCHEDULE EVERY 1 MONTH
         DO
             INSERT INTO monthly_bill (meter_id, `YEAR_MONTH`, bill_amount)
-            SELECT id, DATE_FORMAT(CURRENT_DATE + INTERVAL 1 MONTH, "%Y-%m"), (present_reading - previous_reading) * rate
-            FROM meter;
+            SELECT 
+                m.id,
+                DATE_FORMAT(CURRENT_DATE + INTERVAL 1 MONTH, "%Y-%m") AS next_month,
+                (m.present_reading - m.previous_reading) * r.rate AS calculated_value
+            FROM meter m
+            JOIN rate r ON m.rate_id = r.id;
         ');
         // event to update 1min_usage in every min
         DB::unprepared('
@@ -151,7 +155,6 @@ return new class extends Migration
             FROM
                 `meter` m;
         ');
-
     }
 
     /**
@@ -164,6 +167,5 @@ return new class extends Migration
         DB::unprepared('DROP EVENT IF EXISTS update_monthly_bill');
         DB::unprepared('DROP EVENT IF EXISTS update_1hour_usage');
         DB::unprepared('DROP EVENT IF EXISTS update_1day_usage');
-        
     }
 };

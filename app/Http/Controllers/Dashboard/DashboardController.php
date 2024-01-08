@@ -21,16 +21,19 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-
         $this->middleware(function ($request, $next) {
-            $this->meterinfo = Meter::where('MID', Auth::user()->F_MID)->first();
+            $meter = Meter::where('MID', Auth::user()->F_MID)->first();
+            $rate = DB::table('rate')->where('id', $meter->rate_id)->first();
+            $this->meterinfo = [
+                'meter' => $meter,
+                'rate' => $rate,
+            ];
             return $next($request);
         });
     }
 
     public function index()
     {
-
         $meterinfo = $this->meterinfo; // Add this line to define $meterinfo
         return view('dashboard', compact('meterinfo'));
     }
@@ -54,7 +57,7 @@ class DashboardController extends Controller
         }
 
         $usage = DB::table($tableNames[$unit])
-            ->where('meter_id', $this->meterinfo->id)
+            ->where('meter_id', $this->meterinfo['meter']->id)
             ->get()
             ->toArray();
 
@@ -64,13 +67,13 @@ class DashboardController extends Controller
 
     public function fetch_meter_bill()
     {
-        $meterbill = DB::table('monthly_bill')->where('meter_id', $this->meterinfo->id)->get()->toArray();
+        $meterbill = DB::table('monthly_bill')->where('meter_id', $this->meterinfo['meter']->id)->get()->toArray();
         // ddd($meterbill);
         return response()->json($meterbill);
     }
     public function Consumption()
     {
-        $Consumption = DB::table('meter')->where('id', $this->meterinfo->id)->orderBy('id', 'desc')->first();
+        $Consumption = DB::table('meter')->where('id', $this->meterinfo['meter']->id)->orderBy('id', 'desc')->first();
         return response()->json($Consumption);
     }
 }
